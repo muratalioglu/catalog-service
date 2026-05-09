@@ -6,6 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
@@ -17,7 +22,16 @@ public class BookJsonTests {
     @Test
     void testSerialize() throws Exception {
 
-        var book = new Book("12345677890", "Title", "Author", 9.90);
+        var book = new Book(
+                null,
+                "12345677890",
+                "Title",
+                "Author",
+                9.90,
+                Instant.now().minusSeconds(15 * 60),
+                Instant.now(),
+                0
+        );
         var jsonContent = json.write(book);
 
         assertThat(jsonContent)
@@ -35,6 +49,10 @@ public class BookJsonTests {
         assertThat(jsonContent)
                 .extractingJsonPathNumberValue("@.price")
                 .isEqualTo(book.price());
+
+        assertThat(jsonContent)
+                .extractingJsonPathStringValue("@.createdDate")
+                .isEqualTo(book.createdDate().toString());
     }
 
     @Test
@@ -51,6 +69,6 @@ public class BookJsonTests {
 
         assertThat(json.parse(content))
                 .usingRecursiveComparison()
-                .isEqualTo(new Book("1234567890", "Title", "Author", 9.90));
+                .isEqualTo(Book.of("1234567890", "Title", "Author", 9.90));
     }
 }
