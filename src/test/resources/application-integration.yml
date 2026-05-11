@@ -3,5 +3,7 @@ spring:
     config:
       enabled: false
       fail-fast: false
+  config:
+    import:
   datasource:
     url: jdbc:tc:postgresql:14.4:///
