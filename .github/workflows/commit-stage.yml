@@ -32,6 +32,10 @@ jobs:
         with:
           sarif_file: "${{ steps.scan.outputs.sarif }}"
       - name: Build, unit tests and integration tests
+        env:
+          SPRING_CLOUD_CONFIG_ENABLED: false
+          SPRING_CLOUD_CONFIG_FAIL_FAST: false
+          SPRING_CONFIG_IMPORT: ""
         run: |
           chmod +x mvnw
           ./mvnw install
